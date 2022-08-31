@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { PostDetail } from "./PostDetail";
+
 const maxPostPage = 10;
 
 async function fetchPosts() {
@@ -14,13 +15,24 @@ export function Posts() {
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedPost, setSelectedPost] = useState(null);
 
-  // replace with useQuery
-  const { data } = useQuery("posts", fetchPosts);
+  // isLoading VS isFetching
+  /*
+        isFetching : 비동기 쿼리가 해결되지 않음
+        isLoading : 가져오는 상태에 있음, 쿼리 핢수가 아직 해결되지 않음, 표시할 캐시 데이터도 없음,
+                    isLoading 은 isFetching 의 부분집합
+        isError : 오류가 있을시에 기본적으로 3번 재요청 후 에러 반환
+  */
+  const { data, isLoading, isFetching, error, isError } = useQuery(
+    "posts",
+    fetchPosts
+  );
 
   return (
     <>
       <ul>
-        {data &&
+        {isLoading ? (
+          <h3>Loading...</h3>
+        ) : (
           data.map((post) => (
             <li
               key={post.id}
@@ -29,7 +41,8 @@ export function Posts() {
             >
               {post.title}
             </li>
-          ))}
+          ))
+        )}
       </ul>
       <div className="pages">
         <button disabled onClick={() => {}}>
