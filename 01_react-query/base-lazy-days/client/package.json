@@ -15,6 +15,7 @@
     "@testing-library/user-event": "^12.8.3",
     "@types/react-bootstrap": "^0.32.25",
     "@types/react-dom": "^17.0.3",
+    "@types/react-query": "^1.2.9",
     "@typescript-eslint/eslint-plugin": "^4.8.1",
     "@typescript-eslint/parser": "^4.7.0",
     "axios": "^0.24.0",
@@ -37,10 +38,10 @@
     "formik": "^2.2.6",
     "framer-motion": "^3.10.6",
     "image-webpack-loader": "^7.0.1",
-    "prettier": "^2.2.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-icons": "^4.2.0",
+    "react-query": "^3.39.2",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
@@ -67,5 +68,8 @@
   },
   "jest": {
     "resetMocks": false
+  },
+  "devDependencies": {
+    "prettier": "^2.7.1"
   }
 }
