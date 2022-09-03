@@ -1,19 +1,31 @@
-import { useState } from "react";
-import { useQuery } from "react-query";
+import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "react-query";
 import { PostDetail } from "./PostDetail";
 
 const maxPostPage = 10;
 
-async function fetchPosts() {
+async function fetchPosts(pageNum) {
   const response = await fetch(
-    "https://jsonplaceholder.typicode.com/posts?_limit=10&_page=0"
+    `https://jsonplaceholder.typicode.com/posts?_limit=${maxPostPage}&_page=${pageNum}`
   );
   return response.json();
 }
 
 export function Posts() {
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedPost, setSelectedPost] = useState(null);
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    // 다음 페이지 데이터를 미리 fetch 해옴
+    if (currentPage < maxPostPage) {
+      const nextPage = currentPage + 1;
+      queryClient.prefetchQuery(["posts", nextPage], () =>
+        fetchPosts(nextPage)
+      );
+    }
+  }, [queryClient, currentPage]);
 
   // isLoading VS isFetching
   /*
@@ -29,9 +41,9 @@ export function Posts() {
         cacheTime(default 5분) : 데이터가 inactive 상태일 때 캐싱된 상태로 남아있는 시간 > 시간 초과시 가비지 콜렉터로 수집
   */
   const { data, isLoading, isFetching, error, isError } = useQuery(
-    "posts",
-    fetchPosts,
-    { staleTime: 2000, cacheTime: 3000 }
+    ["posts", currentPage],
+    () => fetchPosts(currentPage),
+    { staleTime: 2000, keepPreviousData: true }
   );
 
   return (
@@ -52,11 +64,21 @@ export function Posts() {
         )}
       </ul>
       <div className="pages">
-        <button disabled onClick={() => {}}>
+        <button
+          disabled={currentPage <= 1}
+          onClick={() => {
+            setCurrentPage((prevState) => prevState - 1);
+          }}
+        >
           Previous page
         </button>
-        <span>Page {currentPage + 1}</span>
-        <button disabled onClick={() => {}}>
+        <span>Page {currentPage}</span>
+        <button
+          disabled={currentPage >= maxPostPage}
+          onClick={() => {
+            setCurrentPage((prevState) => prevState + 1);
+          }}
+        >
           Next page
         </button>
       </div>
