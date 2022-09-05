@@ -26,15 +26,13 @@ export function useAuth(): UseAuth {
     password: string,
   ): Promise<void> {
     try {
-      const {
-        data,
-        status,
-      }: AxiosResponse<AuthResponseType> = await axiosInstance({
-        url: urlEndpoint,
-        method: 'POST',
-        data: { email, password },
-        headers: { 'Content-Type': 'application/json' },
-      });
+      const { data, status }: AxiosResponse<AuthResponseType> =
+        await axiosInstance({
+          url: urlEndpoint,
+          method: 'POST',
+          data: { email, password },
+          headers: { 'Content-Type': 'application/json' },
+        });
 
       if (status === 400) {
         const title = 'message' in data ? data.message : 'Unauthorized';
@@ -67,6 +65,7 @@ export function useAuth(): UseAuth {
   async function signin(email: string, password: string): Promise<void> {
     authServerCall('/signin', email, password);
   }
+
   async function signup(email: string, password: string): Promise<void> {
     authServerCall('/user', email, password);
   }
